@@ -1,13 +1,15 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "commonjs",
-    "outDir": "./dist",
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "es2020"
-  },
-  "exclude": ["src/actions", "src/actions"]
+    "compileOnSave": true,
+    "compilerOptions": {
+        "module": "commonjs",
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "outDir": "out",
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2020"
+    },
+    "include": [
+        "**/*"
+    ]
 }

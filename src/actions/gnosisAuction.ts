@@ -5,22 +5,26 @@ const BOND_ABI = require("../abis/bond.json");
 const BOND_INTERFACE = new utils.Interface(BOND_ABI);
 
 const getTransferEventFromLogs = (logs: Log[]) => {
-  let foundTransferEvent: { from: string; to: string; value: string };
+  let foundTransferEvent: { from: string; to: string; value: string } = {
+    from: "",
+    to: "",
+    value: "",
+  };
   for (let i = 0; i < logs.length; i++) {
     const log = logs[i];
     try {
       console.log(`Bond event was found: ${log.address}.`);
       const possibleTransferEvent = BOND_INTERFACE.parseLog(log);
       if (possibleTransferEvent.name === "Transfer") {
-        const from = possibleTransferEvent.args["from"];
-        const to = possibleTransferEvent.args["to"];
-        const value = possibleTransferEvent.args["value"];
-        return { from, to, value };
+        foundTransferEvent.from = possibleTransferEvent.args["from"];
+        foundTransferEvent.to = possibleTransferEvent.args["to"];
+        foundTransferEvent.value = possibleTransferEvent.args["value"];
       }
     } catch (e) {
       console.log(`Event not found in Bond ABI address: ${log.address}.`);
     }
   }
+  return foundTransferEvent;
 };
 
 export const transfer = async (context: Context, event: Event) => {
