@@ -1,0 +1,39 @@
+account_id: ""
+actions:
+  namaskar_1f64f/arbor-finance:
+    runtime: v2
+    sources: src/actions
+    specs:
+      helloWorldTransactions:
+        description: Transaction that produced HelloWorld on Web3Actions contract.
+        function: hello:helloWorldFn
+        trigger:
+          type: transaction
+          transaction:
+            filters:
+              - eventEmitted:
+                  contract:
+                    address: 0xca5f355d158e7f38f58145c5e6f0c870b00e3cc7
+                  name: HelloWorld
+                network: 3
+            status:
+              - mined
+      gnosisAuctionTransactions:
+        description: Someone purchased bonds from the auction.
+        function: gnosisAuction:transfer
+        trigger:
+          type: transaction
+          transaction:
+            filters:
+              - eventEmitted:
+                  contract:
+                    address: 0x0b7ffc1f4ad541a4ed16b40d8c37f0929158d101
+                  name: ClaimedFromOrder
+                status: success
+                network: 1
+              - logEmitted:
+                  startsWith:
+                    - 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+            status:
+              - mined
+project_slug: ""
