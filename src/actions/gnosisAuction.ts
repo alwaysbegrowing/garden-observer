@@ -13,8 +13,8 @@ const getTransferEventFromLogs = async (logs: Log[], bondFactory: Contract) => {
   let foundTransferEvent: TransferEvent = {
     bond: "",
     from: "",
-    to: BigNumber.from(0),
-    value: "",
+    to: "",
+    value: BigNumber.from(0),
   };
   for (let i = 0; i < logs.length; i++) {
     const log = logs[i];
@@ -51,9 +51,14 @@ export const transfer = async (context: Context, event: Event) => {
     transactionEvent.logs,
     bondFactory
   );
-  if (!transferEvent) {
+  if (
+    transferEvent.bond === "" ||
+    transferEvent.from === "" ||
+    transferEvent.to === ""
+  ) {
     return console.error("no transfer event found");
   }
+
   const requestToSend = await recordReferralOnChainVine(
     transferEvent,
     transactionEvent.hash

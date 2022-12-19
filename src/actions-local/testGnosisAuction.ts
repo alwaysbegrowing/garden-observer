@@ -1,5 +1,7 @@
-import { TestRuntime, TestTransactionEvent } from "@tenderly/actions-test";
+import { TestRuntime } from "@tenderly/actions-test";
 import { transfer } from "../actions/gnosisAuction";
+import { config } from "dotenv";
+config();
 /*
  * Running Web3 Actions code locally.
  * TestRuntime is a helper class that allows you to run the functions,
@@ -7,14 +9,13 @@ import { transfer } from "../actions/gnosisAuction";
  **/
 const main = async () => {
   const testRuntime = new TestRuntime();
-
   testRuntime.context.secrets.put(
     "TENDERLY_API_KEY",
-    "-WQVN07l2QmoLOJDgYKtV8-KvT9keRik"
+    process.env.TENDERLY_API_KEY || ""
   );
   testRuntime.context.secrets.put(
     "TENDERLY_GATEWAY_URL",
-    "https://mainnet.gateway.tenderly.co/1hkLuGa16Wa4LGnjnfzqfM"
+    process.env.TENDERLY_GATEWAY_URL || ""
   );
   try {
     await testRuntime.execute(
