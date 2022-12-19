@@ -1,4 +1,5 @@
 import { JsonRpcProvider } from "@ethersproject/providers";
+import { Context } from "@tenderly/actions";
 import axios, { AxiosResponse } from "axios";
 
 type TenderlyForkRequest = {
@@ -62,7 +63,7 @@ export const tenderlyApi = (
     return await axiosOnTenderly.delete(inProject(`fork/${forkId}`));
   };
 
-  async function aTenderlyFork(
+  async function getFork(
     fork: TenderlyForkRequest
   ): Promise<TenderlyForkProvider> {
     const forkResponse = await axiosInProject.post(`/fork`, fork);
@@ -93,6 +94,10 @@ export const tenderlyApi = (
   }
 
   return {
-    aTenderlyFork,
+    getFork,
   };
+};
+
+export const getProvider = async (context: Context) => {
+  return new JsonRpcProvider(await context.secrets.get("TENDERLY_GATEWAY_URL"));
 };

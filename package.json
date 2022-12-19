@@ -15,6 +15,6 @@
   },
   "scripts": {
     "test": "ts-node ./src/actions-local/testGnosisAuction.ts",
-    "develop": "nodemon"
+    "dev": "nodemon"
   }
 }

@@ -8,12 +8,22 @@ import { transfer } from "../actions/gnosisAuction";
 const main = async () => {
   const testRuntime = new TestRuntime();
 
-  testRuntime.context.secrets.put("meowmeow", "");
-
-  await testRuntime.execute(
-    transfer,
-    require("./payload/payload-test-claim.json")
+  testRuntime.context.secrets.put(
+    "TENDERLY_API_KEY",
+    "-WQVN07l2QmoLOJDgYKtV8-KvT9keRik"
   );
+  testRuntime.context.secrets.put(
+    "TENDERLY_GATEWAY_URL",
+    "https://mainnet.gateway.tenderly.co/1hkLuGa16Wa4LGnjnfzqfM"
+  );
+  try {
+    await testRuntime.execute(
+      transfer,
+      require("./payload/payload-test-old-factory.json")
+    );
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 (async () => await main())();
