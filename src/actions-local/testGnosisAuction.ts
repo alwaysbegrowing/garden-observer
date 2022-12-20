@@ -26,14 +26,14 @@ const main = async () => {
       transfer,
       require("./payload/payload-test-old-factory.json")
     );
-    await testRuntime.execute(
-      newSellOrder,
-      require("./payload/payload-test-bid.json")
-    );
-    await testRuntime.execute(
-      cancellationSellOrder,
-      require("./payload/payload-test-cancel.json")
-    );
+    // await testRuntime.execute(
+    //   newSellOrder,
+    //   require("./payload/payload-test-bid.json")
+    // );
+    // await testRuntime.execute(
+    //   cancellationSellOrder,
+    //   require("./payload/payload-test-cancel.json")
+    // );
   } catch (e) {
     console.log(e);
   }

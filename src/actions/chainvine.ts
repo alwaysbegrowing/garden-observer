@@ -1,17 +1,20 @@
+import { Context } from "@tenderly/actions";
+import axios from "axios";
 import { formatUnits } from "ethers/lib/utils";
 import { TransferEvent } from "./types";
 
 export const recordReferralOnChainVine = async (
+  context: Context,
   transferEvent: TransferEvent,
   transactionHash: string
 ) => {
   const amount = transferEvent.value.toString();
   const usdValue = formatUnits(amount, 6).toString();
-  const requestToSend = {
+  const referral = {
     // wallet_address - string - The claimer’s Ethereum wallet address
-    wallet_address: transferEvent.from,
+    wallet_address: transferEvent.to,
     // amount - number - The amount of tokens transferred
-    amount,
+    amount: formatUnits(amount, 6),
     // token_address - string - The address of the transferred token
     token_address: transferEvent.bond,
     // transaction_hash - string - The optional transaction hash for the transfer
@@ -21,5 +24,23 @@ export const recordReferralOnChainVine = async (
     // usd_value - number - The USD value of the token at the time of the event.
     usd_value: usdValue,
   };
-  return requestToSend;
+  if (await sendRequest(context, referral)) {
+    return referral;
+  } else {
+    throw new Error("Failed to send referral to ChainVine");
+  }
+};
+
+export const sendRequest = async (context: Context, referral: any) => {
+  console.log(referral);
+  const response = await axios.post(
+    await context.secrets.get("CHAINVINE_EVENT_ENDPOINT"),
+    referral,
+    {
+      headers: {
+        "x-api-key": await context.secrets.get("CHAINVINE_API_KEY"),
+      },
+    }
+  );
+  return response.status === 200;
 };

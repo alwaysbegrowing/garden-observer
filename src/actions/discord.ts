@@ -1,6 +1,7 @@
 import { formatUnits } from "ethers/lib/utils";
 import { getConfig } from "./constants";
 import { CancellationSellOrderEvent, NewSellOrderEvent } from "./types";
+import axios from "axios";
 
 export const NEW_SELL_ORDER_TEMPLATE = (newSellOrder: NewSellOrderEvent) => {
   const config = getConfig(newSellOrder);
@@ -94,12 +95,6 @@ export const CANCELLATION_SELL_ORDER_TEMPLATE = (
   };
 };
 
-export const sendWebhook = async (messageToSend: any) => {
-  await fetch(process.env.AVOCADO_WEBHOOK_URL || "", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(messageToSend),
-  });
+export const sendWebhook = async (webhookUrl: string, messageToSend: any) => {
+  await axios.post(webhookUrl, messageToSend);
 };

@@ -15,6 +15,7 @@
   },
   "scripts": {
     "test": "ts-node ./src/actions-local/testGnosisAuction.ts",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "deploy": "tenderly actions deploy"
   }
 }
