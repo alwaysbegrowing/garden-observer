@@ -6,3 +6,21 @@ export type TransferEvent = {
   to: string;
   value: BigNumber;
 };
+
+export type NewSellOrderEvent = {
+  auctionId: string;
+  userId: string;
+  buyAmount: BigNumber;
+  sellAmount: BigNumber;
+  address?: string;
+  transaction?: string;
+};
+
+export type CancellationSellOrderEvent = {
+  auctionId: string;
+  userId: string;
+  buyAmount: BigNumber;
+  sellAmount: BigNumber;
+  address?: string;
+  transaction?: string;
+};

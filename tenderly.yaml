@@ -4,7 +4,7 @@ actions:
     runtime: v1
     sources: src/actions
     specs:
-      gnosisAuctionTransactions:
+      gnosisAuctionTransfer:
         description: Someone purchased bonds from the auction.
         function: gnosisAuction:transfer
         trigger:
@@ -20,6 +20,36 @@ actions:
               - logEmitted:
                   startsWith:
                     - 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef
+            status:
+              - mined
+      gnosisAuctionBid:
+        description: Someone bid on bonds from the auction.
+        function: gnosisAuction:newSellOrder
+        trigger:
+          type: transaction
+          transaction:
+            filters:
+              - eventEmitted:
+                  contract:
+                    address: 0x0b7ffc1f4ad541a4ed16b40d8c37f0929158d101
+                  name: NewSellOrder
+                status: success
+                network: 1
+            status:
+              - mined
+      gnosisAuctionCancellation:
+        description: Someone cancelled their bid on the auction.
+        function: gnosisAuction:cancellationSellOrder
+        trigger:
+          type: transaction
+          transaction:
+            filters:
+              - eventEmitted:
+                  contract:
+                    address: 0x0b7ffc1f4ad541a4ed16b40d8c37f0929158d101
+                  name: CancellationSellOrder
+                status: success
+                network: 1
             status:
               - mined
 project_slug: ""

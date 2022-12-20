@@ -1,5 +1,9 @@
 import { TestRuntime } from "@tenderly/actions-test";
-import { transfer } from "../actions/gnosisAuction";
+import {
+  cancellationSellOrder,
+  newSellOrder,
+  transfer,
+} from "../actions/gnosisAuction";
 import { config } from "dotenv";
 config();
 /*
@@ -9,18 +13,26 @@ config();
  **/
 const main = async () => {
   const testRuntime = new TestRuntime();
-  testRuntime.context.secrets.put(
+  [
     "TENDERLY_API_KEY",
-    process.env.TENDERLY_API_KEY || ""
-  );
-  testRuntime.context.secrets.put(
     "TENDERLY_GATEWAY_URL",
-    process.env.TENDERLY_GATEWAY_URL || ""
+    "CHAINVINE_API_KEY",
+    "AVOCADO_WEBHOOK_URL",
+  ].forEach((variable) =>
+    testRuntime.context.secrets.put(variable, process.env[variable] || "")
   );
   try {
     await testRuntime.execute(
       transfer,
       require("./payload/payload-test-old-factory.json")
+    );
+    await testRuntime.execute(
+      newSellOrder,
+      require("./payload/payload-test-bid.json")
+    );
+    await testRuntime.execute(
+      cancellationSellOrder,
+      require("./payload/payload-test-cancel.json")
     );
   } catch (e) {
     console.log(e);
