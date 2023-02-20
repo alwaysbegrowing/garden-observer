@@ -24,7 +24,7 @@ const main = async () => {
   try {
     await testRuntime.execute(
       transfer,
-      require("./payload/payload-test-old-factory.json")
+      require("./payload/payload-test-claim.json")
     );
     // await testRuntime.execute(
     //   newSellOrder,
