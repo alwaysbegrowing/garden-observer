@@ -20,7 +20,7 @@ export const recordReferralOnChainVine = async (
     // transaction_hash - string - The optional transaction hash for the transfer
     transaction_hash: transactionHash,
     // external_identifier - string - An optional identifier referencing a campaign, project, product, etc. should you wish to track this referral against data your side
-    external_identifier: "arbor-finance",
+    external_identifier: "testing-arbor-finance",
     // usd_value - number - The USD value of the token at the time of the event.
     usd_value: usdValue,
   };

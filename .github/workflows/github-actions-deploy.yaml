@@ -7,10 +7,6 @@ jobs:
     steps:
       - name: Get that code
         uses: actions/checkout@v3
-      - name: Get NPM
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16
       - name: Deploy
         run: |
           curl https://raw.githubusercontent.com/Tenderly/tenderly-cli/master/scripts/install-linux.sh | sh
