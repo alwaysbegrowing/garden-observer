@@ -13,11 +13,12 @@ import {
 } from "./discord";
 import {
   getCancellationSellOrderEvent,
+  getClaimedFromOrderEvent,
   getNewSellOrderEvent,
   getTransferEvent,
 } from "./logParsing";
 import { getProvider } from "./tenderly-api";
-import { NewSellOrderEvent } from "./types";
+import { ClaimedFromOrderEvent, NewSellOrderEvent } from "./types";
 
 export const transfer = async (context: Context, event: Event) => {
   const transactionEvent = event as TransactionEvent;
@@ -28,6 +29,9 @@ export const transfer = async (context: Context, event: Event) => {
     provider
   );
 
+  const claimedFromOrderEvent: ClaimedFromOrderEvent =
+    await getClaimedFromOrderEvent(transactionEvent);
+
   const transferEvent = await getTransferEvent(
     transactionEvent.logs,
     bondFactory
@@ -36,6 +40,7 @@ export const transfer = async (context: Context, event: Event) => {
   const sentReferral = await recordReferralOnChainVine(
     context,
     transferEvent,
+    claimedFromOrderEvent,
     transactionEvent.hash
   );
 

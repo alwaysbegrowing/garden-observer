@@ -3,14 +3,15 @@ import { ReferralEvent } from "@chainvine/sdk/lib/types";
 import { Context } from "@tenderly/actions";
 import axios from "axios";
 import { formatUnits } from "ethers/lib/utils";
-import { TransferEvent } from "./types";
+import { ClaimedFromOrderEvent, TransferEvent } from "./types";
 
 export const recordReferralOnChainVine = async (
   context: Context,
   transferEvent: TransferEvent,
+  claimedFromOrderEvent: ClaimedFromOrderEvent,
   transactionHash: string
 ) => {
-  const amount = transferEvent.value.toString();
+  const amount = claimedFromOrderEvent.sellAmount.toString();
 
   // This is the assumed value of the bond. We could get this from the auction price, but the only reason we need this is to fulfil ChainVine's minimum USD amount. So assuming the bond is a little more than it actually cost is OK.
   const usdValue = 1;
@@ -28,6 +29,8 @@ export const recordReferralOnChainVine = async (
     // usd_value - number - The USD value of the token at the time of the event.
     usd_value: Number(usdValue),
   };
+
+  console.log(referral);
 
   const chainVineClient = new ChainvineClient({
     apiKey: await context.secrets.get("CHAINVINE_API_KEY"),

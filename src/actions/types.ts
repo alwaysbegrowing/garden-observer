@@ -24,3 +24,12 @@ export type CancellationSellOrderEvent = {
   address?: string;
   transaction?: string;
 };
+
+export type ClaimedFromOrderEvent = {
+  auctionId: string;
+  userId: string;
+  buyAmount: BigNumber;
+  sellAmount: BigNumber;
+  address?: string;
+  transaction?: string;
+};

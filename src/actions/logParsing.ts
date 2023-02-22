@@ -3,6 +3,7 @@ import { BigNumber, Contract } from "ethers";
 import { BOND_INTERFACE, EASY_AUCTION_INTERFACE } from "./constants";
 import {
   CancellationSellOrderEvent,
+  ClaimedFromOrderEvent,
   NewSellOrderEvent,
   TransferEvent,
 } from "./types";
@@ -140,4 +141,52 @@ export const getCancellationSellOrderEvent = async (
     transaction: transactionEvent.hash,
   };
   return cancellationSellOrder;
+};
+
+export const getClaimedFromOrderEvent = async (
+  transactionEvent: TransactionEvent
+) => {
+  let foundClaimedFromOrderEvent: ClaimedFromOrderEvent = {
+    auctionId: "",
+    userId: "",
+    buyAmount: BigNumber.from(0),
+    sellAmount: BigNumber.from(0),
+  };
+  for (let i = 0; i < transactionEvent.logs.length; i++) {
+    const log = transactionEvent.logs[i];
+    try {
+      const possibleClaimedFromOrderEvent =
+        EASY_AUCTION_INTERFACE.parseLog(log);
+      if (possibleClaimedFromOrderEvent.name !== "ClaimedFromOrder") continue;
+      // Event is a ClaimedFromOrder event
+      foundClaimedFromOrderEvent.auctionId =
+        possibleClaimedFromOrderEvent.args["auctionId"];
+      foundClaimedFromOrderEvent.userId =
+        possibleClaimedFromOrderEvent.args["userId"];
+      foundClaimedFromOrderEvent.buyAmount =
+        possibleClaimedFromOrderEvent.args["buyAmount"];
+      foundClaimedFromOrderEvent.sellAmount =
+        possibleClaimedFromOrderEvent.args["sellAmount"];
+    } catch (e) {
+      console.log(e);
+    }
+  }
+  if (
+    foundClaimedFromOrderEvent.auctionId === "" ||
+    foundClaimedFromOrderEvent.userId === "" ||
+    foundClaimedFromOrderEvent.buyAmount === BigNumber.from(0) ||
+    foundClaimedFromOrderEvent.sellAmount === BigNumber.from(0)
+  ) {
+    throw new Error("no ClaimedFromOrder event found");
+  }
+
+  const claimedFromOrder: ClaimedFromOrderEvent = {
+    auctionId: foundClaimedFromOrderEvent.auctionId.toString(),
+    userId: foundClaimedFromOrderEvent.userId.toString(),
+    buyAmount: foundClaimedFromOrderEvent.buyAmount,
+    sellAmount: foundClaimedFromOrderEvent.sellAmount,
+    address: transactionEvent.from,
+    transaction: transactionEvent.hash,
+  };
+  return claimedFromOrder;
 };
