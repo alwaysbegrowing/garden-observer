@@ -14,7 +14,7 @@
     "typescript": "^4.9.4"
   },
   "scripts": {
-    "test": "ts-node ./src/actions-local/testGnosisAuction.ts",
+    "test": "ts-node ./src/actions-local/testPayload.ts",
     "dev": "nodemon",
     "deploy": "tenderly actions deploy"
   }

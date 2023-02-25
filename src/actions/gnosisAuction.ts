@@ -1,9 +1,8 @@
 import { Context, Event, TransactionEvent } from "@tenderly/actions";
-import { Contract } from "ethers";
 import { recordReferralOnChainVine } from "./chainvine";
 import {
-  ARBOR_BOND_FACTORY,
-  BOND_FACTORY_ABI,
+  BOND_INTERFACE,
+  EASY_AUCTION_INTERFACE,
   isTrackedAuction,
 } from "./constants";
 import {
@@ -11,31 +10,34 @@ import {
   NEW_SELL_ORDER_TEMPLATE,
   sendWebhook,
 } from "./discord";
+import { getMatchingEvent } from "./logParsing";
 import {
-  getCancellationSellOrderEvent,
-  getClaimedFromOrderEvent,
-  getNewSellOrderEvent,
-  getTransferEvent,
-} from "./logParsing";
-import { getProvider } from "./tenderly-api";
-import { ClaimedFromOrderEvent, NewSellOrderEvent } from "./types";
+  CancellationSellOrderEvent,
+  ClaimedFromOrderEvent,
+  NewSellOrderEvent,
+  TransferEvent,
+} from "./types";
+import { getBondFactory } from "./utils";
 
 export const transfer = async (context: Context, event: Event) => {
   const transactionEvent = event as TransactionEvent;
-  const provider = await getProvider(context);
-  const bondFactory = new Contract(
-    ARBOR_BOND_FACTORY,
-    BOND_FACTORY_ABI,
-    provider
+
+  const claimedFromOrderEvent = await getMatchingEvent<ClaimedFromOrderEvent>(
+    transactionEvent,
+    EASY_AUCTION_INTERFACE,
+    "ClaimedFromOrder"
   );
 
-  const claimedFromOrderEvent: ClaimedFromOrderEvent =
-    await getClaimedFromOrderEvent(transactionEvent);
-
-  const transferEvent = await getTransferEvent(
-    transactionEvent.logs,
-    bondFactory
+  const transferEvent = await getMatchingEvent<TransferEvent>(
+    transactionEvent,
+    BOND_INTERFACE,
+    "Transfer"
   );
+
+  const bondFactory = await getBondFactory(context);
+  if (!(await bondFactory.isBond(transferEvent.address))) {
+    throw new Error("bond not found");
+  }
 
   const sentReferral = await recordReferralOnChainVine(
     context,
@@ -49,31 +51,39 @@ export const transfer = async (context: Context, event: Event) => {
 
 export const newSellOrder = async (context: Context, event: Event) => {
   const transactionEvent = event as TransactionEvent;
-  const newSellOrderEvent: NewSellOrderEvent = await getNewSellOrderEvent(
-    transactionEvent
+  const newSellOrderEvent = await getMatchingEvent<NewSellOrderEvent>(
+    transactionEvent,
+    EASY_AUCTION_INTERFACE,
+    "NewSellOrder"
   );
 
   if (!isTrackedAuction(newSellOrderEvent.auctionId.toString())) {
-    return console.log("auction not tracked");
+    throw new Error("auction not tracked");
   }
-
   await sendWebhook(
     await context.secrets.get("AVOCADO_WEBHOOK_URL"),
-    NEW_SELL_ORDER_TEMPLATE(newSellOrderEvent)
+    NEW_SELL_ORDER_TEMPLATE(transactionEvent, newSellOrderEvent)
   );
 };
 
 export const cancellationSellOrder = async (context: Context, event: Event) => {
   const transactionEvent = event as TransactionEvent;
-  const cancellationSellOrderEvent = await getCancellationSellOrderEvent(
-    transactionEvent
-  );
+  const cancellationSellOrderEvent =
+    await getMatchingEvent<CancellationSellOrderEvent>(
+      transactionEvent,
+      EASY_AUCTION_INTERFACE,
+      "CancellationSellOrder"
+    );
 
   if (!isTrackedAuction(cancellationSellOrderEvent.auctionId.toString())) {
-    return console.log("auction not tracked");
+    throw new Error("auction not tracked");
   }
+
   await sendWebhook(
     await context.secrets.get("AVOCADO_WEBHOOK_URL"),
-    CANCELLATION_SELL_ORDER_TEMPLATE(cancellationSellOrderEvent)
+    CANCELLATION_SELL_ORDER_TEMPLATE(
+      transactionEvent,
+      cancellationSellOrderEvent
+    )
   );
 };
