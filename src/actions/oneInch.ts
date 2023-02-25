@@ -23,15 +23,19 @@ export const orderFilled = async (context: Context, event: Event) => {
     BOND_INTERFACE,
     "Transfer"
   );
-  if (!transferEvents) return console.log("a transfer event is missing");
-  const bondTransferEvent = await transferEvents.find(
-    async ({ address }) => await bondFactory.isBond(address)
-  );
-  const tokenTransferEvent = await transferEvents.find(
-    async ({ address }) => !(await bondFactory.isBond(address))
-  );
-  if (!bondTransferEvent || !tokenTransferEvent || !orderFilledEvent)
-    return console.log("bond transfer event is missing");
+
+  let bondTransferEvent: TransferEvent;
+  let tokenTransferEvent: TransferEvent;
+
+  // I think there are two events here so if the first one is the bond transfer
+  // then the second one is the token transfer and vice versa
+  if (await bondFactory.isBond(transferEvents[0].address)) {
+    bondTransferEvent = transferEvents[0];
+    tokenTransferEvent = transferEvents[1];
+  } else {
+    tokenTransferEvent = transferEvents[0];
+    bondTransferEvent = transferEvents[1];
+  }
 
   await sendWebhook(
     await context.secrets.get("AVOCADO_WEBHOOK_URL"),

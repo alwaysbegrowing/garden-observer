@@ -111,8 +111,11 @@ export const ORDER_FILLED_TEMPLATE = (
   tokenTransferEvent: TransferEvent,
   transactionHash: string
 ) => {
-  if (!bondTransferEvent.address) return;
   const config = getConfig(bondTransferEvent.address);
+  let taker =
+    tokenTransferEvent.to === orderFilledEvent.maker
+      ? tokenTransferEvent.from
+      : tokenTransferEvent.to;
   return {
     username: "Garden Observer 🔭🪴",
     embeds: [
@@ -141,14 +144,19 @@ export const ORDER_FILLED_TEMPLATE = (
             inline: true,
           },
           {
-            name: "Maker",
-            value: `[${orderFilledEvent.maker}](https://etherscan.io/address/${orderFilledEvent.maker})`,
-            inline: false,
-          },
-          {
             name: "Transaction",
             value: `[${transactionHash}](https://etherscan.io/tx/${transactionHash})`,
             inline: false,
+          },
+          {
+            name: "Maker",
+            value: `[${orderFilledEvent.maker}](https://etherscan.io/address/${orderFilledEvent.maker})`,
+            inline: true,
+          },
+          {
+            name: "Taker",
+            value: `[${taker}](https://etherscan.io/address/${taker})`,
+            inline: true,
           },
         ],
         footer: {

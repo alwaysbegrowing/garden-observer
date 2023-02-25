@@ -5,7 +5,7 @@ import { abi as BondFactoryAbi } from "./abis/bondFactory.json";
 import { abi as EasyAuctionAbi } from "./abis/easyAuction.json";
 import { abi as AggregationRouter } from "./abis/aggregationRouter.json";
 
-export const isDev = true;
+export const isDev = false;
 
 export const TENDERLY_PROJECT_SLUG = "arbor-finance";
 export const TENDERLY_USERNAME = "namaskar_1f64f";
