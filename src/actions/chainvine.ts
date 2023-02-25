@@ -1,8 +1,6 @@
-import { ChainvineClient } from "@chainvine/sdk";
-import { ReferralEvent } from "@chainvine/sdk/lib/types";
 import { Context } from "@tenderly/actions";
+import axios from "axios";
 import { formatUnits } from "ethers/lib/utils";
-import { isDev } from "./constants";
 import { ClaimedFromOrderEvent, TransferEvent } from "./types";
 
 export const recordReferralOnChainVine = async (
@@ -15,7 +13,7 @@ export const recordReferralOnChainVine = async (
 
   // This is the assumed value of the bond. We could get this from the auction price, but the only reason we need this is to fulfil ChainVine's minimum USD amount. So assuming the bond is a little more than it actually cost is OK.
   const usdValue = 1;
-  const referral: ReferralEvent = {
+  const referral = {
     // wallet_address - string - The claimer’s Ethereum wallet address
     wallet_address: transferEvent.to,
     // amount - number - The amount of tokens transferred
@@ -30,20 +28,24 @@ export const recordReferralOnChainVine = async (
     usd_value: Number(usdValue),
   };
 
-  if (isDev) {
-    console.log("Would have sent referral to ChainVine", referral);
-    return referral;
-  }
-
-  const chainVineClient = new ChainvineClient({
-    apiKey: await context.secrets.get("CHAINVINE_API_KEY"),
-    testMode: false,
-  });
-
-  const response = await chainVineClient.referralConversion(referral);
+  const response = await sendRequest(context, referral);
   if (response) {
     return referral;
   } else {
     throw new Error("Failed to send referral to ChainVine");
   }
+};
+
+export const sendRequest = async (context: Context, referral: any) => {
+  const response = await axios.post(
+    await context.secrets.get("CHAINVINE_EVENT_ENDPOINT"),
+    referral,
+    {
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-key": await context.secrets.get("CHAINVINE_API_KEY"),
+      },
+    }
+  );
+  return response.status === 200;
 };
