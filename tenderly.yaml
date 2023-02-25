@@ -1,7 +1,7 @@
 account_id: ""
 actions:
   namaskar_1f64f/arbor-finance:
-    runtime: v2
+    runtime: v1
     sources: src/actions
     specs:
       oneInchLimitOrderFill:
