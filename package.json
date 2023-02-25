@@ -3,6 +3,7 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@tenderly/actions-test": "^0.1.0",
     "@tenderly/hardhat-tenderly": "^1.4.1",
+    "@types/express": "^4.17.17",
     "@types/node": "^18.11.16",
     "axios": "^0.9",
     "chai": "^4.3.7",
