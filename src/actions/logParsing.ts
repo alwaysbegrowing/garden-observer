@@ -1,4 +1,4 @@
-import { TransactionEvent } from "@tenderly/actions";
+import { TransactionEvent, Log } from "@tenderly/actions";
 import { Interface } from "ethers/lib/utils";
 
 export const getMatchingEvent = <Type>(
@@ -20,7 +20,7 @@ export const getMatchingEvents = <Type>(
   iface: Interface,
   eventName: string
 ): Type[] => {
-  const matchingLogs = transactionEvent.logs.filter((log) => {
+  const matchingLogs = transactionEvent.logs.filter((log: Log) => {
     try {
       const possibleEvent = iface.parseLog(log);
       return possibleEvent.name === eventName;
