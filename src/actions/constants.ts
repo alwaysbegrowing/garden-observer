@@ -36,9 +36,20 @@ const SHAPESHIFT_AUCTION_ONE = {
   auctionId: "399",
 };
 
+const SHAPESHIFT_AUCTION_TWO = {
+  bond: "0xb014af8824028efc93bc076506751786807a2cf8",
+  issuer: "ShapeShift",
+  url: "https://shapeshift.com/",
+  iconUrl: "https://assets.coingecko.com/coins/images/9988/small/FOX.png",
+  bondName: "FOX SIMPLE 2024-03-06 USDC",
+  auctionId: "443",
+};
+
 const BORROWER_MAP: { [key: string]: typeof SHAPESHIFT_AUCTION_ONE } = {
   "399": SHAPESHIFT_AUCTION_ONE,
   "0x2e2a42fbe7c7e2ffc031baf7442dbe1f8957770a": SHAPESHIFT_AUCTION_ONE,
+  "443": SHAPESHIFT_AUCTION_TWO,
+  "0xb014af8824028efc93bc076506751786807a2cf8": SHAPESHIFT_AUCTION_TWO,
 };
 
 export const getConfig = (key: string) => {
