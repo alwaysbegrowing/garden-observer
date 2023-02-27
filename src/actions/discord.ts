@@ -43,7 +43,7 @@ export const NEW_SELL_ORDER_TEMPLATE = (
           },
           {
             name: "Bidder",
-            value: `(${newSellOrder.userId}) [${newSellOrder.address}](https://etherscan.io/address/${newSellOrder.address})`,
+            value: `(${newSellOrder.userId}) [${transactionEvent.from}](https://etherscan.io/address/${transactionEvent.from})`,
             inline: false,
           },
           {
@@ -91,7 +91,7 @@ export const CANCELLATION_SELL_ORDER_TEMPLATE = (
           },
           {
             name: "Bidder",
-            value: `(${cancellationSellOrder.userId}) [${cancellationSellOrder.address}](https://etherscan.io/address/${cancellationSellOrder.address})`,
+            value: `(${cancellationSellOrder.userId}) [${transactionEvent.from}](https://etherscan.io/address/${transactionEvent.from})`,
             inline: false,
           },
           {

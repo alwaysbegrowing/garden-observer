@@ -20,21 +20,21 @@ const main = async () => {
     testRuntime.context.secrets.put(variable, process.env[variable] || "")
   );
 
-  /* 1inch */
-  assert(
-    await expectRunSuccess(
-      testRuntime,
-      orderFilled,
-      require("./payload/payload-order-filled.json")
-    )
-  );
-  assert(
-    await expectRunFailure(
-      testRuntime,
-      orderFilled,
-      require("./payload/payload-order-filled-negative.json")
-    )
-  );
+  // /* 1inch */
+  // assert(
+  //   await expectRunSuccess(
+  //     testRuntime,
+  //     orderFilled,
+  //     require("./payload/payload-order-filled.json")
+  //   )
+  // );
+  // assert(
+  //   await expectRunFailure(
+  //     testRuntime,
+  //     orderFilled,
+  //     require("./payload/payload-order-filled-negative.json")
+  //   )
+  // );
 
   /* Gnosis Auction */
   // assert(
@@ -44,20 +44,20 @@ const main = async () => {
   //     require("./payload/payload-test-claim.json")
   //   )
   // );
-  // assert(
-  //   await expectRunSuccess(
-  //     testRuntime,
-  //     newSellOrder,
-  //     require("./payload/payload-test-bid.json")
-  //   )
-  // );
-  // assert(
-  //   await expectRunSuccess(
-  //     testRuntime,
-  //     cancellationSellOrder,
-  //     require("./payload/payload-test-cancel.json")
-  //   )
-  // );
+  assert(
+    await expectRunSuccess(
+      testRuntime,
+      newSellOrder,
+      require("./payload/payload-test-bid.json")
+    )
+  );
+  assert(
+    await expectRunSuccess(
+      testRuntime,
+      cancellationSellOrder,
+      require("./payload/payload-test-cancel.json")
+    )
+  );
   console.log("All tests passed");
 };
 
