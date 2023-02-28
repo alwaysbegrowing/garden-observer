@@ -40,11 +40,15 @@ export const transfer = async (context: Context, event: Event) => {
   let bondTransferEvent: TransferEvent | null = null;
   let tokenTransferEvent: TransferEvent | undefined = undefined;
 
+  // If there is only one transfer event, it was a full fill
   if (transferEvents.length == 1) {
     if (await bondFactory.isBond(transferEvents[0].address)) {
       bondTransferEvent = transferEvents[0];
     }
   } else {
+    // if there are two transfer events, that means that the person was on the
+    // b o u n d a r y
+    // of the auction, and got partially filled.
     if (await bondFactory.isBond(transferEvents[0].address)) {
       bondTransferEvent = transferEvents[0];
       tokenTransferEvent = transferEvents[1];
@@ -57,10 +61,7 @@ export const transfer = async (context: Context, event: Event) => {
     throw new Error("bond not found");
   }
 
-  // if there are two transfer evvents, that means that the person was on the
-  // b o u n d a r y
-  // of the auction, and got partially filled.
-  // so to send to chainvine, we need to know the amount of USDC transferred and
+  // to send to chainvine, we need to know the amount of USDC transferred and
   // subtract that from their original order amount
   let amount: BigNumber;
   if (tokenTransferEvent) {
