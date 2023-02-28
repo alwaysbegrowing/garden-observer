@@ -1,4 +1,5 @@
 import { Context, Event } from "@tenderly/actions";
+import { BigNumber } from "ethers";
 import { recordReferralOnChainVine } from "./chainvine";
 import {
   BOND_INTERFACE,
@@ -10,7 +11,7 @@ import {
   NEW_SELL_ORDER_TEMPLATE,
   sendWebhook,
 } from "./discord";
-import { getMatchingEvent } from "./logParsing";
+import { getMatchingEvent, getMatchingEvents } from "./logParsing";
 import {
   CancellationSellOrderEvent,
   ClaimedFromOrderEvent,
@@ -28,22 +29,50 @@ export const transfer = async (context: Context, event: Event) => {
     "ClaimedFromOrder"
   );
 
-  const transferEvent = await getMatchingEvent<TransferEvent>(
+  const transferEvents = await getMatchingEvents<TransferEvent>(
     transactionEvent,
     BOND_INTERFACE,
     "Transfer"
   );
 
   const bondFactory = await getBondFactory(context);
-  if (!(await bondFactory.isBond(transferEvent.address))) {
+
+  let bondTransferEvent: TransferEvent | null = null;
+  let tokenTransferEvent: TransferEvent | undefined = undefined;
+
+  if (transferEvents.length == 1) {
+    if (await bondFactory.isBond(transferEvents[0].address)) {
+      bondTransferEvent = transferEvents[0];
+    }
+  } else {
+    if (await bondFactory.isBond(transferEvents[0].address)) {
+      bondTransferEvent = transferEvents[0];
+      tokenTransferEvent = transferEvents[1];
+    } else if (await bondFactory.isBond(transferEvents[1].address)) {
+      bondTransferEvent = transferEvents[1];
+      tokenTransferEvent = transferEvents[0];
+    }
+  }
+  if (!bondTransferEvent) {
     throw new Error("bond not found");
   }
 
+  // if there are two transfer evvents, that means that the person was on the
+  // b o u n d a r y
+  // of the auction, and got partially filled.
+  // so to send to chainvine, we need to know the amount of USDC transferred and
+  // subtract that from their original order amount
+  let amount: BigNumber;
+  if (tokenTransferEvent) {
+    amount = claimedFromOrderEvent.sellAmount.sub(tokenTransferEvent.value);
+  } else {
+    amount = claimedFromOrderEvent.sellAmount;
+  }
   const sentReferral = await recordReferralOnChainVine(
     context,
-    transferEvent,
-    claimedFromOrderEvent,
-    transactionEvent.hash
+    transactionEvent.hash,
+    amount,
+    bondTransferEvent
   );
 
   await context.storage.putJson(sentReferral.wallet_address, sentReferral);

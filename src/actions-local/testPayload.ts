@@ -37,13 +37,28 @@ const main = async () => {
   // );
 
   /* Gnosis Auction */
-  // assert(
-  //   await expectRunSuccess(
-  //     testRuntime,
-  //     transfer,
-  //     require("./payload/payload-test-claim.json")
-  //   )
-  // );
+  assert(
+    await expectRunSuccess(
+      testRuntime,
+      transfer,
+      require("./payload/payload-test-claim.json")
+    )
+  );
+  assert(
+    await expectRunFailure(
+      testRuntime,
+      transfer,
+      require("./payload/payload-test-claim-negative.json")
+    )
+  );
+  assert(
+    await expectRunFailure(
+      testRuntime,
+      transfer,
+      // NOTE: This needs the old bond factory to be used as it's a ribbon bond
+      require("./payload/payload-test-claim-boundary.json")
+    )
+  );
   assert(
     await expectRunSuccess(
       testRuntime,
