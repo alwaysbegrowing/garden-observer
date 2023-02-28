@@ -1,8 +1,9 @@
-import { TransactionEvent, Log } from "@tenderly/actions";
+import { Log } from "@tenderly/actions";
 import { Interface } from "ethers/lib/utils";
+import { ResolvedTransactionEvent } from "./utils";
 
 export const getMatchingEvent = <Type>(
-  transactionEvent: TransactionEvent,
+  transactionEvent: ResolvedTransactionEvent,
   iface: Interface,
   eventName: string
 ): Type => {
@@ -16,7 +17,7 @@ export const getMatchingEvent = <Type>(
 };
 
 export const getMatchingEvents = <Type>(
-  transactionEvent: TransactionEvent,
+  transactionEvent: ResolvedTransactionEvent,
   iface: Interface,
   eventName: string
 ): Type[] => {

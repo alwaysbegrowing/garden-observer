@@ -1,4 +1,4 @@
-import { Context, Event, TransactionEvent } from "@tenderly/actions";
+import { Context, Event } from "@tenderly/actions";
 import {
   BOND_INTERFACE,
   ONE_INCH_AGGREGATION_ROUTER_INTERFACE,
@@ -6,10 +6,10 @@ import {
 import { ORDER_FILLED_TEMPLATE, sendWebhook } from "./discord";
 import { getMatchingEvent, getMatchingEvents } from "./logParsing";
 import { OrderFilledEvent, TransferEvent } from "./types";
-import { getBondFactory } from "./utils";
+import { getBondFactory, getResolvedTransactionEvent } from "./utils";
 
 export const orderFilled = async (context: Context, event: Event) => {
-  const transactionEvent = event as TransactionEvent;
+  const transactionEvent = await getResolvedTransactionEvent(event, context);
   const bondFactory = await getBondFactory(context);
 
   const orderFilledEvent = getMatchingEvent<OrderFilledEvent>(

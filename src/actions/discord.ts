@@ -7,10 +7,10 @@ import {
   TransferEvent,
 } from "./types";
 import axios from "axios";
-import { TransactionEvent } from "@tenderly/actions";
+import { ResolvedTransactionEvent } from "./utils";
 
 export const NEW_SELL_ORDER_TEMPLATE = (
-  transactionEvent: TransactionEvent,
+  transactionEvent: ResolvedTransactionEvent,
   newSellOrder: NewSellOrderEvent
 ) => {
   const config = getConfig(newSellOrder.auctionId.toString());
@@ -43,7 +43,7 @@ export const NEW_SELL_ORDER_TEMPLATE = (
           },
           {
             name: "Bidder",
-            value: `(${newSellOrder.userId}) [${transactionEvent.from}](https://etherscan.io/address/${transactionEvent.from})`,
+            value: `(${newSellOrder.userId}) [${transactionEvent.resolvedFrom}](https://etherscan.io/address/${transactionEvent.resolvedFrom})`,
             inline: false,
           },
           {
@@ -58,7 +58,7 @@ export const NEW_SELL_ORDER_TEMPLATE = (
 };
 
 export const CANCELLATION_SELL_ORDER_TEMPLATE = (
-  transactionEvent: TransactionEvent,
+  transactionEvent: ResolvedTransactionEvent,
   cancellationSellOrder: CancellationSellOrderEvent
 ) => {
   const config = getConfig(cancellationSellOrder.auctionId.toString());
@@ -91,7 +91,7 @@ export const CANCELLATION_SELL_ORDER_TEMPLATE = (
           },
           {
             name: "Bidder",
-            value: `(${cancellationSellOrder.userId}) [${transactionEvent.from}](https://etherscan.io/address/${transactionEvent.from})`,
+            value: `(${cancellationSellOrder.userId}) [${transactionEvent.resolvedFrom}](https://etherscan.io/address/${transactionEvent.resolvedFrom})`,
             inline: false,
           },
           {

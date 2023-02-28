@@ -48,7 +48,7 @@ const main = async () => {
     await expectRunSuccess(
       testRuntime,
       newSellOrder,
-      require("./payload/payload-test-bid.json")
+      require("./payload/payload-test-bid-ens-name.json")
     )
   );
   assert(
