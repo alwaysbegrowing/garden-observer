@@ -99,5 +99,5 @@ export const tenderlyApi = (
 };
 
 export const getProvider = async (context: Context) => {
-  return new JsonRpcProvider(await context.secrets.get("TENDERLY_GATEWAY_URL"));
+  return new JsonRpcProvider(await context.secrets.get("JSON_RPC_URL"));
 };

@@ -2,5 +2,5 @@
   "watch": ["src"],
   "ext": "ts,json",
   "ignore": [],
-  "exec": "yarn test"
+  "exec": "npm run test"
 }
