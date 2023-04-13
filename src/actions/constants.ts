@@ -45,11 +45,23 @@ const SHAPESHIFT_AUCTION_TWO = {
   auctionId: "443",
 };
 
+const ICHI_AUCTION = {
+  bond: "0x8dfbe438df77a658627dc808a45b3a9616d4fc73",
+  issuer: "Ichi",
+  url: "https://ichi.org/",
+  iconUrl:
+    "https://assets.coingecko.com/coins/images/13119/small/ICHI_(Round).jpg",
+  bondName: "ICHI SIMPLE 2023-07-19 USDC",
+  auctionId: "479",
+};
+
 const BORROWER_MAP: { [key: string]: typeof SHAPESHIFT_AUCTION_ONE } = {
   "399": SHAPESHIFT_AUCTION_ONE,
   "0x2e2a42fbe7c7e2ffc031baf7442dbe1f8957770a": SHAPESHIFT_AUCTION_ONE,
   "443": SHAPESHIFT_AUCTION_TWO,
   "0xb014af8824028efc93bc076506751786807a2cf8": SHAPESHIFT_AUCTION_TWO,
+  "479": ICHI_AUCTION,
+  "0x8dfbe438df77a658627dc808a45b3a9616d4fc73": ICHI_AUCTION,
 };
 
 export const getConfig = (key: string) => {
